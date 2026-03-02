@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Demand } from './types/demand'
 import { calculateSituation } from './services/demandStatusService'
 import { validateDemand } from './services/demandValidationService'
@@ -18,18 +18,29 @@ const defaultForm: Omit<Demand, 'id'> = {
   dueDate: todayIso()
 }
 
-export function App() {
-  const [demands, setDemands] = useState<Demand[]>([])
-  const [form, setForm] = useState(defaultForm)
-  const [error, setError] = useState('')
+type UserRole = 'usuario' | 'admin'
+type Screen = 'inicio' | 'nova-demanda' | 'consultar-demandas' | 'importar-exportar'
 
-  async function refresh() {
-    setDemands(await listDemands())
+function AccessGate({ allowedRoles, userRole, children }: { allowedRoles: UserRole[]; userRole: UserRole; children: JSX.Element }) {
+  if (!allowedRoles.includes(userRole)) {
+    return <p>Você não possui acesso a esta tela.</p>
   }
 
-  useEffect(() => {
-    void refresh()
-  }, [])
+  return children
+}
+
+function HomePage() {
+  return (
+    <section>
+      <h2>Acesso às telas</h2>
+      <p>Use o menu para navegar entre todas as telas disponíveis para o perfil de usuário.</p>
+    </section>
+  )
+}
+
+function NewDemandPage({ onCreated }: { onCreated: () => Promise<void> }) {
+  const [form, setForm] = useState(defaultForm)
+  const [error, setError] = useState('')
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -42,31 +53,12 @@ export function App() {
     setError('')
     await saveDemand({ ...form, id: crypto.randomUUID() })
     setForm(defaultForm)
-    await refresh()
-  }
-
-  async function onDelete(id: string) {
-    await deleteDemand(id)
-    await refresh()
-  }
-
-  async function onExport() {
-    const json = await exportDemands()
-    navigator.clipboard?.writeText(json)
-  }
-
-  async function onImport() {
-    const raw = window.prompt('Cole o JSON exportado')
-    if (!raw) return
-    await importDemands(raw)
-    await refresh()
+    await onCreated()
   }
 
   return (
-    <main>
-      <h1>WebDemands</h1>
-      <button onClick={onExport}>Exportar JSON</button>
-      <button onClick={onImport}>Importar JSON</button>
+    <section>
+      <h2>Nova demanda</h2>
       <form onSubmit={onSubmit}>
         <input aria-label="Descrição" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
         <input aria-label="Projeto" value={form.project} onChange={(e) => setForm({ ...form, project: e.target.value })} />
@@ -75,6 +67,14 @@ export function App() {
         <button type="submit">Salvar</button>
       </form>
       {error && <p role="alert">{error}</p>}
+    </section>
+  )
+}
+
+function DemandsPage({ demands, onDelete }: { demands: Demand[]; onDelete: (id: string) => Promise<void> }) {
+  return (
+    <section>
+      <h2>Consultar demandas</h2>
       <ul>
         {demands.map((d) => (
           <li key={d.id}>
@@ -83,6 +83,82 @@ export function App() {
           </li>
         ))}
       </ul>
+    </section>
+  )
+}
+
+function ImportExportPage({ onImported }: { onImported: () => Promise<void> }) {
+  async function onExport() {
+    const json = await exportDemands()
+    await navigator.clipboard?.writeText(json)
+  }
+
+  async function onImport() {
+    const raw = window.prompt('Cole o JSON exportado')
+    if (!raw) return
+    await importDemands(raw)
+    await onImported()
+  }
+
+  return (
+    <section>
+      <h2>Importação e exportação</h2>
+      <button onClick={onExport}>Exportar JSON</button>
+      <button onClick={onImport}>Importar JSON</button>
+    </section>
+  )
+}
+
+export function App() {
+  const [demands, setDemands] = useState<Demand[]>([])
+  const [currentScreen, setCurrentScreen] = useState<Screen>('inicio')
+  const userRole: UserRole = 'usuario'
+
+  const screensForUser = useMemo(
+    () => [
+      { key: 'inicio' as Screen, label: 'Início' },
+      { key: 'nova-demanda' as Screen, label: 'Nova demanda' },
+      { key: 'consultar-demandas' as Screen, label: 'Consultar demandas' },
+      { key: 'importar-exportar' as Screen, label: 'Importar/Exportar' }
+    ],
+    []
+  )
+
+  async function refresh() {
+    setDemands(await listDemands())
+  }
+
+  useEffect(() => {
+    void refresh()
+  }, [])
+
+  async function onDelete(id: string) {
+    await deleteDemand(id)
+    await refresh()
+  }
+
+  const screenContent: Record<Screen, JSX.Element> = {
+    inicio: <HomePage />,
+    'nova-demanda': <NewDemandPage onCreated={refresh} />,
+    'consultar-demandas': <DemandsPage demands={demands} onDelete={onDelete} />,
+    'importar-exportar': <ImportExportPage onImported={refresh} />
+  }
+
+  return (
+    <main>
+      <h1>WebDemands</h1>
+      <p>Perfil ativo: usuário</p>
+      <nav aria-label="Navegação principal">
+        {screensForUser.map((screen) => (
+          <button key={screen.key} onClick={() => setCurrentScreen(screen.key)} style={{ marginRight: 12 }}>
+            {screen.label}
+          </button>
+        ))}
+      </nav>
+
+      <AccessGate allowedRoles={['usuario', 'admin']} userRole={userRole}>
+        {screenContent[currentScreen]}
+      </AccessGate>
     </main>
   )
 }
