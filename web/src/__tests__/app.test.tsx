@@ -8,6 +8,10 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
 
+    await user.type(screen.getByLabelText('E-mail'), 'user@webdemands.com')
+    await user.type(screen.getByLabelText('Senha'), '123456')
+    await user.click(screen.getByRole('button', { name: 'Entrar' }))
+
     await user.click(screen.getByRole('button', { name: 'Nova demanda' }))
     await user.type(screen.getByLabelText('Descrição'), 'Nova demanda')
     await user.type(screen.getByLabelText('Projeto'), 'Web')

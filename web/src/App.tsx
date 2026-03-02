@@ -21,6 +21,37 @@ const defaultForm: Omit<Demand, 'id'> = {
 type UserRole = 'usuario' | 'admin'
 type Screen = 'inicio' | 'nova-demanda' | 'consultar-demandas' | 'importar-exportar'
 
+function LoginPage({ onLogin }: { onLogin: () => void }) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+
+  function onSubmit(event: React.FormEvent) {
+    event.preventDefault()
+
+    if (!email.trim() || !password.trim()) {
+      setError('Informe e-mail e senha para continuar.')
+      return
+    }
+
+    setError('')
+    onLogin()
+  }
+
+  return (
+    <section>
+      <h1>WebDemands</h1>
+      <h2>Login</h2>
+      <form onSubmit={onSubmit}>
+        <input aria-label="E-mail" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input aria-label="Senha" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <button type="submit">Entrar</button>
+      </form>
+      {error && <p role="alert">{error}</p>}
+    </section>
+  )
+}
+
 function AccessGate({ allowedRoles, userRole, children }: { allowedRoles: UserRole[]; userRole: UserRole; children: JSX.Element }) {
   if (!allowedRoles.includes(userRole)) {
     return <p>Você não possui acesso a esta tela.</p>
@@ -111,6 +142,7 @@ function ImportExportPage({ onImported }: { onImported: () => Promise<void> }) {
 
 export function App() {
   const [demands, setDemands] = useState<Demand[]>([])
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [currentScreen, setCurrentScreen] = useState<Screen>('inicio')
   const userRole: UserRole = 'usuario'
 
@@ -142,6 +174,10 @@ export function App() {
     'nova-demanda': <NewDemandPage onCreated={refresh} />,
     'consultar-demandas': <DemandsPage demands={demands} onDelete={onDelete} />,
     'importar-exportar': <ImportExportPage onImported={refresh} />
+  }
+
+  if (!isAuthenticated) {
+    return <LoginPage onLogin={() => setIsAuthenticated(true)} />
   }
 
   return (
