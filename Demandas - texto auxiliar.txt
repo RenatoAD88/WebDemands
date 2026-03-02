@@ -1,0 +1,91 @@
+cd C:\MyDemands
+py -m PyInstaller --noconfirm --onefile --windowed --name DemandasApp app.py
+dist\DemandasApp.exe
+
+Melhorias:
+Criar tela de monitoramento
+criar tela de dados importantes
+criar senha de acesso
+
+
+Próximo:
+Deixar o software compatível com arquitetura 32bits;
+
+Criar experiência de enviar dados por e-mail.
+Então envie um arquivo idêntico ao formato da função de exportar, onde basta o usuário ao clicar no novo botão (dentro das regras de um botão) de enviar por e-mail
+se o usuário multi-selecionar as demandas, somente essas devem ser enviadas por e-mail.
+o dado a ser enviado deve ser a mesma planilha CSV em anexo.
+o corpo de e-mail deve ter uma mensagem padrão: "Segue-se anexo as demandas compartilhadas"
+solicitar que o usuário insira o e-mail do destinatário e um título obrigatoriamente
+criar senha de acesso: Sistema de login com senha e autenticação via e-mail.
+
+Em andamento:
+Descrição e comentários com sugestões da IA
+
+Melhorar:
+o checkmark da seleção de 'apresentar demandas canceladas' está transparente, mude para preto.
+
+Deram certo:
+Criar uma experiência de um Sistema de notificação, nele contemplar
+Se a ocorrência da notificação já aconteceu e já foi lida ou excluída ela não deve mais aparecer como notificação e deve ser ignorada pelo sistema de notificação. Deve ser considerado que o usuário já foi notificado e está ciente, ou seja, só deve ser notificado 1x e se ele marcar como lido ou também excluir é para o sistema não notificar mais exclusivamente para aquela ocorrência.
+Criar o botão de 'Atualizar' para atualizar manualmente todas as notificações que ainda não foram apresentadas. Lembrando que se o usuário já leu ou apagou essa notificação não deve ser apresentada novamente.
+Criar uma experiência de demandas canceladas. Permitir que somente demandas que não foram concluídas que possam receber o novo status de canceladas, ou seja, é um novo status e esse valor deve estar presente em todas as dropdowns de status (criar demanda, duplicar, filtros,etc...). As demandas canceladas deverão apenas ser apresentadas na tab de 'Consultar Demandas Concluídas' quando o usuário selecionar um checkbox de 'Apresentar demandas canceladas', então aparece uma nova seção somente com as demandas canceladas abaixo das da seção das demandas concluídas. Se desselecionado, a seção que mostrava as demanda canceladas deve voltar a ficar oculta. Regra: As regras de edição, duplicação e exclusão das demandas cancelada deverão ser exatamente as mesmas das concluídas. Quando uma demanda for marcada como Cancelada, os registros dessa demanda devem sair da tab de Consultar demandas pendentes, devem ter o valor de %conclusão mudado para 0% automaticamente, e irem para a seção oculta dentro da tab de Consultar demandas concluídas.
+Ao clicar em fechar o aplicativo, Na modal os botões devem ser 'Sim' e 'Não' clicando em Sim ou apertando a tecla 'Enter' do teclado o aplicativo deve fechar. se o usuário clicar em 'Não' ou apertando a tecla 'Esc' do teclado a modal deve ser fechada.
+Quando deletar uma demanda nas tabs de consulta demandas pendentes e consultar demandas concluídas, não alterar o ID das demandas que remaneceram, ou seja, desde quando uma demanda é criada ela permanece com o ID e não será mais utilizada quando apagada. Com isso, só um ID é permitido para uma demanda, uma única vez. o ID tem que ser auto incrementável e toda vez que criar ou duplicar uma demanda tem que usar o novo ID incrementado.
+Criar mensagem de confirma para fechar o aplicativo
+quando duplicar uma demanda concluída, abrir uma modal de aviso dizendo: "Essa demanda foi recriada como pendente", e o número 'ID' da primeira linha da tab de consultar demandas pendentes, como em anexo que foi criada o novo registro e ter apenas o botão de confirmar, podendo apertar a tecla 'enter' ou 'esc' do teclado para fechar a janela. mas também criar um contador de 5 segundos regressivo e fechar automaticamente essa modal ao final da contagem do tempo.   
+Exemplo: \nEssa demanda foi recriada como pendente\nID: 6 \n\nConfirmar (5)
+Ajuste de % conclusão
+arrumar o preenchimento de cada célula da coluna de % conclusão.
+o % de conclusão preenchido automaticamente preenche com azul a cor da célula.
+Exemplo, se a demanda tem 0% concluído, a cor de fundo de preenchimento não muda.
+Se a demanda tem 25%, então 25% da célula de % de conclusão daquela demande deve estar horizontalmente pinta de azul.
+Se a demanda tem 50%, então 50% da célula de % de conclusão daquela demande deve estar horizontalmente pinta de azul.
+Se a demanda tem 75%, então 75% da célula de % de conclusão daquela demande deve estar horizontalmente pinta de azul.
+Se a demanda tem 100%, então 100% da célula de % de conclusão daquela demande deve estar horizontalmente pinta de azul.
+Na tab de Todas demandas concluídas, permitir o usuário alterar o Status, e fazer com que essa demanda tenha a data de conclusão removida e o usuário deve digitar o novo valor do %conclusão, e essa demanda deve parecer novamente na tela de 'consultar demandas Pendentes'.
+uniformizar a experiência de exclusão de demandas nas tabs de Consultar demandas pendentes e Consultar demandas concluídas.
+Regra:
+Se o usuário selecionar uma ou mais demanda, e clicar no botão de Deletar do painel de botões ou apertar a tecla 'Delete' do teclado, deverá abrir a modal com as informações das linhas selecionadas.
+A partir de agora ermitir que demandas concluídas sejam deletas.
+Se nenhuma demanda estiver selecionada e o botão de exclusão do menu for apertado, abrir a modal de exclusão vazia e permitir o usuário deletar uma ou mais demandas após ele entrar com os ID's desejados e clicar em Carregar.
+Ao carregar as informações de ID, Projeto, Prazo, Descrição e Status, o usuário poderá clicar nas opções de Escluir, onde apagará somente os registros das demandas previamente carregadas na modal de exclusão.
+Permitir o usuário apertar a tecla 'enter' do teclado para permitir a exclusão após carregadas as informações.
+Permitir o usuário apertar a tecla 'esc' do teclado para cancelar a operação de exclusão e zerar os dados carregados.
+Sempre que editar o status de uma demanda na tab de consultar demandas concluídas, ao solicitar o preenchimento do %conclusão trazer a mesma experiência de apresentação das opções válidas que são apresentadas na modal de criação e duplicação de demandas, ou seja, apresentar em uma dropdownlist as opções de: 0% - Não iniciado, 25% - Começando, 50% - Parcial, 75% - Avançado e 100% - concluído
+
+Novas regras para Criar uma nova demanda ou duplicar:
+Uma demanda que está sendo inserida, seja por duplicação ou criação, ela não pode ter o valor de % de conclusão de 100% - concluído selecionado em um status que não seja o de 'Concluído', para todos os outros status crie e apresente uma mensagem de alerta dentro da modal dizendo que essa operação não é possível por motivos de que uma demanda não pode ser criada 100% concluída com um status que não seja o de concluído.
+excluir tab de Consultar Pendências. ela não é mais necessária pois a tab 'Todas demandas Pendentes ' já possui todas as funções dessa tab. 
+Na tab de Todas demandas Pendentes, reorganiar a barra de buscas das pendências, mostar os filtros a serem selecionados nessa sequência: Prazo, projeto, status,Prioridade, responsável e Busca.
+permitir apagar o Prazo do filtro da tab de 'todas demandas pendentes' e trazer todas as demandas pendentes sem nenhum de filtro, assim também o botão de 'Resetar Filtros' também deve limpar o campo de prazo.
+Renomear a tab de Todas demandas Pendentes para 'Consultar Demandas Pendentes'
+Na tab de Consultar Demandas Pendentes e Consultar Demandas Concluídas Inserir a coluna de comentário, deve ser igual ao campo de descrição exceto por não ser um campo obrigatório. 
+Não deve ter o filtro de Comentário, logo ele deve ser removido da tab Consultar Demandas Pendentes.
+Ao criar uma nova demanda, na modal de Criar demanda adicionar o campo de Comentário, ele não é obrigatório mas deve estar dentro da seção de campos obrigatórios, essa seção deve ser renomeada para 'Dados Principais'.
+Na tab de Consultar Demandas Pendentes, ao selecionar um valor de qualquer um dos filtros, aplicar imediatamente sem a necessidade de clicar em 'Aplicar Filtros'
+Na tab de Consultar Demandas Pendentes, o filtro 'Busca' deve ser renomeado por 'Palavra-chave'.
+Na tab de Consultar Demandas Pendentes, o filtro de Palavra chave trazer como resultado qualquer demanda que tenha a palavra nos campos de Projeto, Descrição, comentário, id azure, responsável, nome e time/função.
+icone de Informações mais discreto
+Selecionar vários nomes de um time e copiar para a área de transferência com os nomes entre vírgulas de um modo que seja possível colar os nomes na modal de adicionar nomes dos funcionários para facilitar a cópia dos nomes entre os meses.
+Organizar por coluna
+restaurar backup
+backup diário automático criptrografado
+Permitir em todas as modais que as teclas:
+Enter: Deve acionar o botão 'Confirmar'
+Esc: Deve acionar o botão 'Cancelar'
+Quando selecionar mais de um nome dentro da seção e no click em deletar, permitir que o usuário possa pagar mais de um nome ao mesmo tempo, carregando os nomes de todos os nomes previamente selecionados. se clicar em confirmar, os nomes deverão ser apagados da seção selecionada. se cancelado, nada acontece e a janela de exclusão deve fechar e limpar os dados da modal de exclusão de funcionário.
+Multi seleção para exclusão
+criptrografar os dados
+crie a experiência exportação de dados para csv com atalho sempre visível. além do botão de atalho necessariamente deve ter a label de 'exportar' nessa experiência
+Mudar a cor das letras prioridades para: Alta: vermelho, Média: amarelo e baixa: verde
+trocar o label de todos os menus de 'Linha' para 'ID', e também mudar o nome da label na experiência de excluir demandas.
+exceto descrição que deve ser alinhado para a esquerda, todos os dados das listas das demandas de todas as tabs devem ser centralizados
+Aumentar a largura da linha da descrição quando passar de 45 caractéres e quebrar o texto automaticamente dentro da mesma célula.
+colocar os arquivos na pasta c
+
+
+deram errado:
+na tab de consultar demandas concluídas entre datas, apresente na ordem onde a demanda concluída mais recente ser a apresentada por primeiro, e as concluídas por primeiro ficam mais para baixo, independente da data de conclusão
+icones na barra de tarefas icondemand.png
+No filtro de status, criar uma experiência para o usuário poder selecionar mais de um valor a se filtrado
