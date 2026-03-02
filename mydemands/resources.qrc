@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="/icons">
+    <file alias="new_demand_light.svg">../img/new_demand_light.svg</file>
+    <file alias="new_demand_dark.svg">../img/new_demand_dark.svg</file>
+    <file alias="delete_light.svg">../img/delete_light.svg</file>
+    <file alias="delete_dark.svg">../img/delete_dark.svg</file>
+    <file alias="export_light.svg">../img/export_light.svg</file>
+    <file alias="export_dark.svg">../img/export_dark.svg</file>
+    <file alias="import_light.svg">../img/import_light.svg</file>
+    <file alias="import_dark.svg">../img/import_dark.svg</file>
+  </qresource>
+</RCC>
