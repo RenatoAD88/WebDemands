@@ -96,3 +96,34 @@ IA_CACHE_ENABLED=true
     - Q3: Importante + Não urgente
     - Q4: Não importante + Não urgente
 - Apenas status pendentes/ativos entram na matriz (`Não iniciada`, `Em andamento`, `Bloqueado`, `Requer revisão`).
+
+---
+
+## WebDemands (web local-first) — execução one-command
+
+Esta primeira rodada adiciona uma base web para rodar localmente no navegador, sem backend obrigatório.
+
+### Pré-requisitos
+- Node.js 20+
+
+### Comandos (na raiz do repositório)
+```bash
+npm install
+npm run dev
+npm run build
+npm run test
+npm run lint
+npm run typecheck
+npm run clean
+```
+
+### Arquitetura local-first
+- Persistência de demandas em IndexedDB (`web/src/db/demandRepository.ts`).
+- Import/Export em JSON (camada de repositório + botões na UI).
+- Regras centralizadas:
+  - validações: `web/src/services/demandValidationService.ts`
+  - situação/status: `web/src/services/demandStatusService.ts`
+
+### Troubleshooting rápido
+- Se `npm run dev` falhar, confira versão do Node (`node -v`).
+- Se testes de UI falharem localmente, reinstale dependências (`npm install`) e rode `npm run test` novamente.
