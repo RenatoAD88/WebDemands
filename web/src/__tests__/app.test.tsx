@@ -8,9 +8,11 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
 
+    await user.click(screen.getByRole('button', { name: 'Nova demanda' }))
     await user.type(screen.getByLabelText('Descrição'), 'Nova demanda')
     await user.type(screen.getByLabelText('Projeto'), 'Web')
     await user.click(screen.getByRole('button', { name: 'Salvar' }))
+    await user.click(screen.getByRole('button', { name: 'Consultar demandas' }))
 
     expect(await screen.findByText(/Nova demanda/)).toBeInTheDocument()
   })
